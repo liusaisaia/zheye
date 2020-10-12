@@ -1,12 +1,28 @@
 <template>
   <div class="container">
     <global-header :user="currentUser"></global-header>
-    <column-list :list="list"></column-list>
+    <column-list :list="list" v-show="false"></column-list>
+    <form>
+      <div class="form-group">
+        <label for="exampleInputEmail1">邮箱地址</label>
+        <input type="email" class="form-control"
+          v-model="emailRef.val"
+          @blur="validateEmail"
+          id="exampleInputEmail1" aria-describedby="emailHelp">
+        <div class="form-text" v-if="emailRef.error">
+          {{emailRef.message}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">密码</label>
+        <input type="password" class="form-control" id="exampleInputPassword1">
+      </div>
+    </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ColumnList, { ColumProps } from './components/ColumnList.vue'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
@@ -30,6 +46,7 @@ const testData: ColumProps[] = [
     avatar: 'https://cn.vuejs.org/images/logo.png'
   }
 ]
+const emailReg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/
 export default defineComponent({
   name: 'App',
   components: {
@@ -37,9 +54,25 @@ export default defineComponent({
     GlobalHeader
   },
   setup () {
+    const emailRef = reactive({
+      val: '',
+      error: false,
+      message: ''
+    })
+    const validateEmail = () => {
+      if (emailRef.val.trim() === '') {
+        emailRef.error = true
+        emailRef.message = 'Please enter a valid email'
+      } else if (!emailReg.test(emailRef.val)) {
+        emailRef.error = true
+        emailRef.message = 'should be a valid email'
+      }
+    }
     return {
       list: testData,
-      currentUser: currentUser
+      currentUser: currentUser,
+      emailRef,
+      validateEmail
     }
   }
 })

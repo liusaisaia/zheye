@@ -1,3 +1,8 @@
+<!--
+ * @LastEditors: liusaisai
+ * @LastEditTime: 2020-10-12 10:47:17
+-->
+// 下拉组件
 <template>
   <div class="dropdown" ref="dropdownRef">
     <a href="#" class="btn btn-outline-light mr-2 my-2 dropdown-toggle" @click.prevent="toggleOpen">
@@ -10,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
+import useClickOutside from '../hooks/useClickOutside'
 export default defineComponent({
   name: 'Dropdown',
   props: {
@@ -22,21 +28,16 @@ export default defineComponent({
   setup () {
     const isOpen = ref(false)
     const dropdownRef = ref<null | HTMLElement>(null)
+    // 展开下拉框
     const toggleOpen = () => {
       isOpen.value = !isOpen.value
     }
-    const handler = (e: MouseEvent) => {
-      if (dropdownRef.value) {
-        if (!dropdownRef.value.contains(e.target as HTMLElement) && isOpen.value) {
-
-        }
+    const isClickOutside = useClickOutside(dropdownRef)
+    // 监听状态的变化 刷新
+    watch(isClickOutside, () => {
+      if (isOpen.value && isClickOutside.value) {
+        isOpen.value = false
       }
-    }
-    onMounted(() => {
-      document.addEventListener('click', handler)
-    })
-    onUnmounted(() => {
-      document.removeEventListener('click', handler)
     })
     return {
       isOpen,
