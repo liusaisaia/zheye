@@ -1,7 +1,7 @@
 <template>
   <form class>
     <slot name="default"></slot>
-    <div class="submit-area">
+    <div class="submit-area" @click.prevent="submitForm">
       <slot name="submit">
         <button type="submit" class="btn btn-primary">
           提交
@@ -14,7 +14,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent({
-
+  emits: ['form-submit'],
+  setup (props, context) {
+    const submitForm = () => {
+      context.emit('form-submit', true)
+    }
+    return {
+      submitForm
+    }
+  }
 })
 </script>
 
