@@ -3,7 +3,7 @@
   <div class="container">
     <global-header :user="currentUser"></global-header>
     <column-list :list="list" v-show="false"></column-list>
-    <validate-form @form-submit="onFormSubmit">
+    <validate-form @form-submit="onFormSubmit" ref="" >
       <div class="mb-3">
         <label class="form-lable">邮箱地址</label>
         <validate-input
